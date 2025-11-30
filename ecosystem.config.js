@@ -2,14 +2,15 @@ module.exports = {
   apps: [
     {
       name: 'safeguard',
-      script: 'node_modules/next/dist/bin/next',
-      args: 'start -p 3003',
+      script: 'node',
+      args: '.next/standalone/server.js',
       cwd: '/path/to/SafeVault', // À modifier avec le chemin absolu de votre projet
       instances: 1,
       exec_mode: 'fork',
       env: {
         NODE_ENV: 'production',
         PORT: 3003,
+        HOSTNAME: '0.0.0.0',
         DATABASE_URL: 'file:./prisma/safeguard.db',
         PUPPETEER_BROWSER_URL: 'http://localhost:3001',
       },
