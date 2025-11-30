@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3003",
     "build": "next build",
-    "start": "node .next/standalone/server.js",
+    "start": "PORT=3003 node .next/standalone/server.js",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
