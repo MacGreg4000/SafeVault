@@ -1,8 +1,7 @@
 'use server'
 
-import { authenticateUser, createUser } from '@/lib/auth'
+import { authenticateUser, createUser, UserRole } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { UserRole } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
 
@@ -78,7 +77,7 @@ export async function setupFirstAdmin(
   await prisma.inventory.create({
     data: {
       safeId: safe.id,
-      billDetails: {},
+      billDetails: JSON.stringify({}),
       totalAmount: 0,
     },
   })

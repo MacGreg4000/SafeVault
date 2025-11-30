@@ -3,9 +3,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { createTransaction } from '@/app/actions/safe'
+import { createTransaction, TransactionType, TransactionMode } from '@/app/actions/safe'
 import { BILL_VALUES, calculateTotal, type BillDetails } from '@/lib/bills'
-import { TransactionType, TransactionMode } from '@prisma/client'
 import { format } from 'date-fns'
 
 interface SafeDetailClientProps {
@@ -35,7 +34,7 @@ export default function SafeDetailClient({
   const [notes, setNotes] = useState('')
 
   const inventory = safe.inventory
-  const currentBills = (inventory?.billDetails as BillDetails) || {}
+  const currentBills: BillDetails = inventory?.billDetails ? JSON.parse(inventory.billDetails) : {}
 
   const handleBillChange = (value: number, quantity: number) => {
     setBillDetails((prev) => {
@@ -328,9 +327,13 @@ export default function SafeDetailClient({
                     </div>
                   )}
                   <div className="mt-2 text-xs text-gray-500">
-                    {Object.entries(transaction.billDetails as BillDetails)
-                      .filter(([_, qty]) => qty > 0)
-                      .map(([value, qty]) => `${qty}x ${value}€`)
+                    {Object.entries(
+                      typeof transaction.billDetails === 'string'
+                        ? (JSON.parse(transaction.billDetails) as BillDetails)
+                        : (transaction.billDetails as BillDetails)
+                    )
+                      .filter(([_, qty]) => (qty as number) > 0)
+                      .map(([value, qty]) => `${qty as number}x ${value}€`)
                       .join(', ')}
                   </div>
                 </motion.div>

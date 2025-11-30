@@ -39,6 +39,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const billDetails = typeof transaction.billDetails === 'string'
+      ? JSON.parse(transaction.billDetails)
+      : transaction.billDetails
+
     const html = generateTransactionPDFHTML({
       transactionId: transaction.id,
       safeName: transaction.safe.name,
@@ -46,7 +50,7 @@ export async function POST(request: NextRequest) {
       type: transaction.type,
       mode: transaction.mode,
       amount: transaction.amount,
-      billDetails: transaction.billDetails as Record<string, number>,
+      billDetails: billDetails as Record<string, number>,
       date: format(new Date(transaction.createdAt), 'dd/MM/yyyy HH:mm'),
       notes: transaction.notes || undefined,
     })

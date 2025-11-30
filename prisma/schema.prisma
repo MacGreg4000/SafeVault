@@ -15,7 +15,7 @@ model User {
   email         String    @unique
   name          String
   passwordHash  String
-  role          UserRole  @default(USER)
+  role          String    @default("USER") // "ADMIN" ou "USER"
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   
@@ -59,20 +59,20 @@ model UserSafePermission {
 }
 
 model Transaction {
-  id          String          @id @default(cuid())
+  id          String   @id @default(cuid())
   safeId      String
   userId      String
-  type        TransactionType
-  mode        TransactionMode
-  amount      Float           // Montant total en euros
+  type        String   // "INVENTORY" ou "MOVEMENT"
+  mode        String   // "ADD", "REMOVE" ou "REPLACE"
+  amount      Float    // Montant total en euros
   notes       String?
-  createdAt   DateTime        @default(now())
+  createdAt   DateTime @default(now())
   
-  // Détails des billets
-  billDetails Json            // { "5": 10, "10": 5, "20": 3, ... } quantité par valeur
+  // Détails des billets (JSON stringifié)
+  billDetails String   // { "5": 10, "10": 5, "20": 3, ... } quantité par valeur
   
-  user        User            @relation(fields: [userId], references: [id])
-  safe        Safe            @relation(fields: [safeId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id])
+  safe        Safe     @relation(fields: [safeId], references: [id], onDelete: Cascade)
   
   @@index([safeId])
   @@index([userId])
@@ -83,7 +83,7 @@ model Transaction {
 model Inventory {
   id          String   @id @default(cuid())
   safeId      String
-  billDetails Json     // État actuel des billets: { "5": 10, "10": 5, ... }
+  billDetails String   // État actuel des billets (JSON stringifié): { "5": 10, "10": 5, ... }
   totalAmount Float    // Montant total calculé
   updatedAt   DateTime @default(now())
   
@@ -91,21 +91,5 @@ model Inventory {
   
   @@unique([safeId])
   @@index([safeId])
-}
-
-enum UserRole {
-  ADMIN
-  USER
-}
-
-enum TransactionType {
-  INVENTORY  // Remplacement (inventaire)
-  MOVEMENT   // Mouvement (+/-)
-}
-
-enum TransactionMode {
-  ADD        // Ajout de billets
-  REMOVE     // Retrait de billets
-  REPLACE    // Remplacement (inventaire)
 }
 

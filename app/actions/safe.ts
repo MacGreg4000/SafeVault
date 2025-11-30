@@ -2,9 +2,22 @@
 
 import { prisma } from '@/lib/prisma'
 import { calculateTotal, validateBillDetails, type BillDetails } from '@/lib/bills'
-import { TransactionType, TransactionMode } from '@prisma/client'
 import { getCurrentUser } from './auth'
 import { revalidatePath } from 'next/cache'
+
+export const TransactionType = {
+  INVENTORY: 'INVENTORY',
+  MOVEMENT: 'MOVEMENT',
+} as const
+
+export const TransactionMode = {
+  ADD: 'ADD',
+  REMOVE: 'REMOVE',
+  REPLACE: 'REPLACE',
+} as const
+
+export type TransactionType = typeof TransactionType[keyof typeof TransactionType]
+export type TransactionMode = typeof TransactionMode[keyof typeof TransactionMode]
 
 export async function getSafes() {
   const user = await getCurrentUser()
@@ -68,8 +81,8 @@ export async function getSafeById(safeId: string) {
 
 export async function createTransaction(
   safeId: string,
-  type: TransactionType,
-  mode: TransactionMode,
+  type: string,
+  mode: string,
   billDetails: BillDetails,
   notes?: string
 ) {
@@ -110,7 +123,7 @@ export async function createTransaction(
       type,
       mode,
       amount,
-      billDetails: billDetails as any,
+      billDetails: JSON.stringify(billDetails),
       notes,
     },
   })
@@ -124,7 +137,7 @@ export async function createTransaction(
     return { error: 'Inventaire non trouvé' }
   }
 
-  const currentBills = (inventory.billDetails as BillDetails) || {}
+  const currentBills: BillDetails = inventory.billDetails ? JSON.parse(inventory.billDetails) : {}
   let newBills: BillDetails = { ...currentBills }
 
   if (type === TransactionType.INVENTORY || mode === TransactionMode.REPLACE) {
@@ -155,7 +168,7 @@ export async function createTransaction(
   await prisma.inventory.update({
     where: { safeId },
     data: {
-      billDetails: newBills as any,
+      billDetails: JSON.stringify(newBills),
       totalAmount: newTotal,
       updatedAt: new Date(),
     },

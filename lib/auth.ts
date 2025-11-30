@@ -1,6 +1,12 @@
 import bcrypt from 'bcryptjs'
 import { prisma } from './prisma'
-import { UserRole } from '@prisma/client'
+
+export const UserRole = {
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+} as const
+
+export type UserRole = typeof UserRole[keyof typeof UserRole]
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10)
@@ -17,7 +23,7 @@ export async function createUser(
   email: string,
   password: string,
   name: string,
-  role: UserRole = UserRole.USER
+  role: string = UserRole.USER
 ) {
   const passwordHash = await hashPassword(password)
   return prisma.user.create({
