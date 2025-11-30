@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'safeguard',
       script: 'node_modules/next/dist/bin/next',
-      args: 'start',
+      args: 'start -p 3003',
       cwd: '/path/to/SafeVault', // À modifier avec le chemin absolu de votre projet
       instances: 1,
       exec_mode: 'fork',
