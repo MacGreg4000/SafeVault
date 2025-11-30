@@ -71,7 +71,7 @@ pm2 startup
 ### 8. Accéder à l'application
 
 Ouvrez votre navigateur et accédez à :
-- `http://votre-nas-ip:3000`
+- `http://votre-nas-ip:3003`
 
 Lors du premier accès, vous serez redirigé vers le wizard de configuration pour créer le premier administrateur et le premier coffre-fort.
 
@@ -120,7 +120,7 @@ L'application se connecte à un service Puppeteer externe sur le port 3001. Assu
 
 ### L'application ne démarre pas
 
-1. Vérifiez que le port 3000 n'est pas déjà utilisé
+1. Vérifiez que le port 3003 n'est pas déjà utilisé
 2. Vérifiez les logs : `pm2 logs safeguard`
 3. Vérifiez que la base de données existe : `ls -la prisma/safeguard.db`
 
