@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
 import { isDatabaseEmpty } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
+
+export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
   const isEmpty = await isDatabaseEmpty()
@@ -10,7 +11,8 @@ export default async function HomePage() {
     redirect('/setup')
   }
 
-  const userId = cookies().get('userId')?.value
+  const cookieStore = await cookies()
+  const userId = cookieStore.get('userId')?.value
   if (!userId) {
     redirect('/login')
   }

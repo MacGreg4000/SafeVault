@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     const pdf = await generatePDF(html)
 
-    return new NextResponse(pdf, {
+    return new NextResponse(pdf as any, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="transaction-${transactionId}.pdf"`,

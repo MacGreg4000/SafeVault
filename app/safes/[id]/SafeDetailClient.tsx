@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { createTransaction, TransactionType, TransactionMode } from '@/app/actions/safe'
+import { createTransaction } from '@/app/actions/safe'
+import { TransactionType, TransactionMode } from '@/lib/constants'
 import { BILL_VALUES, calculateTotal, type BillDetails } from '@/lib/bills'
 import { format } from 'date-fns'
 
@@ -33,7 +34,7 @@ export default function SafeDetailClient({
   const [billDetails, setBillDetails] = useState<BillDetails>({})
   const [notes, setNotes] = useState('')
 
-  const inventory = safe.inventory
+  const inventory = safe.inventories?.[0] || null
   const currentBills: BillDetails = inventory?.billDetails ? JSON.parse(inventory.billDetails) : {}
 
   const handleBillChange = (value: number, quantity: number) => {

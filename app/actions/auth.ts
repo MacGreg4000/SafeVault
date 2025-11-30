@@ -12,7 +12,8 @@ export async function loginAction(email: string, password: string) {
   }
 
   // Stocker l'ID utilisateur dans un cookie (simple, pour production utiliser NextAuth)
-  cookies().set('userId', user.id, {
+  const cookieStore = await cookies()
+  cookieStore.set('userId', user.id, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
@@ -23,13 +24,14 @@ export async function loginAction(email: string, password: string) {
 }
 
 export async function logoutAction() {
-  cookies().delete('userId')
+  const cookieStore = await cookies()
+  cookieStore.delete('userId')
   revalidatePath('/')
-  return { success: true }
 }
 
 export async function getCurrentUser() {
-  const userId = cookies().get('userId')?.value
+  const cookieStore = await cookies()
+  const userId = cookieStore.get('userId')?.value
   if (!userId) return null
 
   return prisma.user.findUnique({
@@ -83,7 +85,8 @@ export async function setupFirstAdmin(
   })
 
   // Connecter l'admin
-  cookies().set('userId', admin.id, {
+  const cookieStore = await cookies()
+  cookieStore.set('userId', admin.id, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

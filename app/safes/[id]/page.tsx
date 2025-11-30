@@ -6,14 +6,15 @@ import SafeDetailClient from './SafeDetailClient'
 export default async function SafeDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
   const user = await getCurrentUser()
   if (!user) {
     redirect('/login')
   }
 
-  const safeResult = await getSafeById(params.id)
+  const { id } = await params
+  const safeResult = await getSafeById(id)
   if (safeResult.error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -23,7 +24,7 @@ export default async function SafeDetailPage({
   }
 
   const safe = safeResult.safe!
-  const transactionsResult = await getTransactions(params.id)
+  const transactionsResult = await getTransactions(id)
   const transactions = transactionsResult.transactions || []
 
   const hasWritePermission =

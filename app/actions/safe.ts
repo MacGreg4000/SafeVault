@@ -2,22 +2,9 @@
 
 import { prisma } from '@/lib/prisma'
 import { calculateTotal, validateBillDetails, type BillDetails } from '@/lib/bills'
+import { TransactionType, TransactionMode } from '@/lib/constants'
 import { getCurrentUser } from './auth'
 import { revalidatePath } from 'next/cache'
-
-export const TransactionType = {
-  INVENTORY: 'INVENTORY',
-  MOVEMENT: 'MOVEMENT',
-} as const
-
-export const TransactionMode = {
-  ADD: 'ADD',
-  REMOVE: 'REMOVE',
-  REPLACE: 'REPLACE',
-} as const
-
-export type TransactionType = typeof TransactionType[keyof typeof TransactionType]
-export type TransactionMode = typeof TransactionMode[keyof typeof TransactionMode]
 
 export async function getSafes() {
   const user = await getCurrentUser()
@@ -62,7 +49,7 @@ export async function getSafeById(safeId: string) {
   const safe = await prisma.safe.findUnique({
     where: { id: safeId },
     include: {
-      inventory: true,
+      inventories: true,
       permissions: {
         where: { userId: user.id },
       },
