@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  passwordHash  String
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  permissions   UserSafePermission[]
+  transactions  Transaction[]
+  
+  @@index([email])
+}
+
+model Safe {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relations
+  permissions   UserSafePermission[]
+  transactions  Transaction[]
+  inventories   Inventory[]
+  
+  @@index([name])
+}
+
+model UserSafePermission {
+  id        String   @id @default(cuid())
+  userId    String
+  safeId    String
+  canRead   Boolean  @default(true)
+  canWrite  Boolean  @default(false)
+  canManage Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  safe      Safe     @relation(fields: [safeId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, safeId])
+  @@index([userId])
+  @@index([safeId])
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  safeId      String
+  userId      String
+  type        TransactionType
+  mode        TransactionMode
+  amount      Float           // Montant total en euros
+  notes       String?
+  createdAt   DateTime        @default(now())
+  
+  // Détails des billets
+  billDetails Json            // { "5": 10, "10": 5, "20": 3, ... } quantité par valeur
+  
+  user        User            @relation(fields: [userId], references: [id])
+  safe        Safe            @relation(fields: [safeId], references: [id], onDelete: Cascade)
+  
+  @@index([safeId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([type])
+}
+
+model Inventory {
+  id          String   @id @default(cuid())
+  safeId      String
+  billDetails Json     // État actuel des billets: { "5": 10, "10": 5, ... }
+  totalAmount Float    // Montant total calculé
+  updatedAt   DateTime @default(now())
+  
+  safe        Safe     @relation(fields: [safeId], references: [id], onDelete: Cascade)
+  
+  @@unique([safeId])
+  @@index([safeId])
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum TransactionType {
+  INVENTORY  // Remplacement (inventaire)
+  MOVEMENT   // Mouvement (+/-)
+}
+
+enum TransactionMode {
+  ADD        // Ajout de billets
+  REMOVE     // Retrait de billets
+  REPLACE    // Remplacement (inventaire)
+}
+
