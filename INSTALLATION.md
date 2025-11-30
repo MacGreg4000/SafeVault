@@ -33,15 +33,17 @@ PUPPETEER_BROWSER_URL="http://localhost:3001"
 
 ### 4. Initialiser Prisma
 
-```bash
-# Générer le client Prisma
-npm run prisma:generate
+**Important** : Les migrations Prisma sont déjà incluses dans le dépôt. Vous n'avez pas besoin de les créer.
 
-# Créer la base de données et appliquer les migrations
-npm run prisma:migrate
+```bash
+# Le client Prisma sera généré automatiquement lors de npm install
+# (grâce au script postinstall dans package.json)
+
+# Appliquer les migrations existantes (créera la base de données)
+npm run prisma:migrate:deploy
 ```
 
-Cette commande créera le fichier `prisma/safeguard.db` (base SQLite).
+Cette commande créera le fichier `prisma/safeguard.db` (base SQLite) en appliquant les migrations déjà présentes dans le dépôt.
 
 ### 5. Construire l'application
 
