@@ -1,11 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { loginAction } from '@/app/actions/auth'
-import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
-  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
