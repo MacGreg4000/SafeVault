@@ -38,6 +38,9 @@ ENV DATABASE_URL="file:./prisma/safeguard.db"
 # Créer une base de données temporaire pour le build si elle n'existe pas
 RUN touch prisma/safeguard.db || true
 
+# Créer le dossier public s'il n'existe pas (pour éviter les erreurs)
+RUN mkdir -p public || true
+
 # Build de l'application
 RUN npm run build
 
@@ -53,17 +56,18 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Créer le dossier public vide (Next.js peut fonctionner sans)
-RUN mkdir -p /app/public
+RUN mkdir -p /app/public && chown -R nextjs:nodejs /app/public
 
 # Copier les fichiers nécessaires depuis le builder
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
-# Copier public seulement s'il existe (optionnel, avec gestion d'erreur)
-RUN --mount=from=builder,source=/app/public,target=/tmp/public \
-    if [ -d "/tmp/public" ] && [ "$(ls -A /tmp/public 2>/dev/null)" ]; then \
-        cp -r /tmp/public/* /app/public/ 2>/dev/null || true; \
+# Copier public avec gestion d'erreur (le dossier peut ne pas exister)
+# On copie d'abord dans un dossier temporaire puis on déplace si ça existe
+RUN --mount=type=bind,from=builder,source=/app,target=/tmp/builder \
+    if [ -d "/tmp/builder/public" ] && [ "$(ls -A /tmp/builder/public 2>/dev/null)" ]; then \
+        cp -r /tmp/builder/public/* /app/public/; \
     fi || true
 
 # Créer le dossier pour la base de données
