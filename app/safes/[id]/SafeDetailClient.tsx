@@ -111,14 +111,14 @@ export default function SafeDetailClient({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-slate-950">
+      <nav className="bg-slate-900/50 border-b border-slate-800 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link href="/safes" className="text-indigo-600 hover:text-indigo-700">
+            <Link href="/safes" className="text-blue-400 hover:text-blue-300 transition-all duration-300 hover:shadow-[0_0_10px_rgba(59,130,246,0.5)]">
               ← Retour
             </Link>
-            <h1 className="text-2xl font-bold text-gray-800">{safe.name}</h1>
+            <h1 className="text-2xl font-bold text-white tracking-wide">{safe.name}</h1>
             <div></div>
           </div>
         </div>
@@ -126,8 +126,8 @@ export default function SafeDetailClient({
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Inventaire actuel */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6 backdrop-blur-sm">
+          <h2 className="text-2xl font-bold text-white mb-4 tracking-wide">
             Inventaire actuel
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-4">
@@ -137,23 +137,23 @@ export default function SafeDetailClient({
               return (
                 <div
                   key={value}
-                  className="border rounded-lg p-4 text-center bg-gray-50"
+                  className="border border-slate-700 rounded-lg p-4 text-center bg-slate-800/50 hover:border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] transition-all duration-300"
                 >
-                  <div className="text-sm text-gray-600 mb-1">{value}€</div>
-                  <div className="text-2xl font-bold text-gray-800">
+                  <div className="text-sm text-slate-400 mb-1">{value}€</div>
+                  <div className="text-2xl font-bold text-white">
                     {quantity}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-slate-500 mt-1">
                     {total.toFixed(2)}€
                   </div>
                 </div>
               )
             })}
           </div>
-          <div className="border-t pt-4">
+          <div className="border-t border-slate-700 pt-4">
             <div className="text-right">
-              <span className="text-lg text-gray-600">Total: </span>
-              <span className="text-3xl font-bold text-indigo-600">
+              <span className="text-lg text-slate-300">Total: </span>
+              <span className="text-3xl font-bold text-gold">
                 {inventory?.totalAmount.toFixed(2) || '0.00'}€
               </span>
             </div>
@@ -165,7 +165,7 @@ export default function SafeDetailClient({
           <div className="mb-6">
             <button
               onClick={() => setShowTransactionForm(!showTransactionForm)}
-              className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-500 transition-all duration-300 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] hover:scale-105"
             >
               {showTransactionForm ? 'Annuler' : '+ Nouvelle transaction'}
             </button>
@@ -177,15 +177,15 @@ export default function SafeDetailClient({
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
-            className="bg-white rounded-lg shadow-md p-6 mb-6"
+            className="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6 backdrop-blur-sm"
           >
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            <h3 className="text-xl font-semibold text-white mb-4 tracking-wide">
               Nouvelle transaction
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
                     Type
                   </label>
                   <select
@@ -193,7 +193,7 @@ export default function SafeDetailClient({
                     onChange={(e) =>
                       setTransactionType(e.target.value as TransactionType)
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                   >
                     <option value={TransactionType.MOVEMENT}>Mouvement</option>
                     <option value={TransactionType.INVENTORY}>Inventaire</option>
@@ -201,7 +201,7 @@ export default function SafeDetailClient({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
                     Mode
                   </label>
                   <select
@@ -209,7 +209,7 @@ export default function SafeDetailClient({
                     onChange={(e) =>
                       setTransactionMode(e.target.value as TransactionMode)
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                   >
                     {transactionType === TransactionType.INVENTORY ? (
                       <option value={TransactionMode.REPLACE}>Remplacement</option>
@@ -224,13 +224,13 @@ export default function SafeDetailClient({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Billets
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
                   {BILL_VALUES.map((value) => (
-                    <div key={value} className="border rounded-lg p-3">
-                      <div className="text-sm text-gray-600 mb-1">{value}€</div>
+                    <div key={value} className="border border-slate-700 rounded-lg p-3 bg-slate-800/50 hover:border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] transition-all duration-300">
+                      <div className="text-sm text-slate-400 mb-1">{value}€</div>
                       <input
                         type="number"
                         min="0"
@@ -241,31 +241,31 @@ export default function SafeDetailClient({
                             parseInt(e.target.value) || 0
                           )
                         }
-                        className="w-full px-2 py-1 border border-gray-300 rounded text-center"
+                        className="w-full px-2 py-1 bg-slate-900 border border-slate-700 text-white rounded text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         placeholder="0"
                       />
                     </div>
                   ))}
                 </div>
-                <div className="mt-2 text-right text-sm text-gray-600">
-                  Total: {calculateTotal(billDetails).toFixed(2)}€
+                <div className="mt-2 text-right text-sm text-slate-300">
+                  Total: <span className="text-gold font-semibold">{calculateTotal(billDetails).toFixed(2)}€</span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Notes (optionnel)
                 </label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                  className="w-full px-4 py-2 bg-slate-800 border border-slate-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                   rows={3}
                 />
               </div>
 
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                <div className="bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg">
                   {error}
                 </div>
               )}
@@ -273,7 +273,7 @@ export default function SafeDetailClient({
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-500 transition-all duration-300 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] hover:scale-105 disabled:opacity-50"
               >
                 {loading ? 'Enregistrement...' : 'Enregistrer la transaction'}
               </button>
@@ -282,12 +282,12 @@ export default function SafeDetailClient({
         )}
 
         {/* Historique des transactions */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-6 backdrop-blur-sm">
+          <h2 className="text-2xl font-bold text-white mb-4 tracking-wide">
             Historique des transactions
           </h2>
           {transactions.length === 0 ? (
-            <p className="text-gray-600">Aucune transaction enregistrée</p>
+            <p className="text-slate-400">Aucune transaction enregistrée</p>
           ) : (
             <div className="space-y-4">
               {transactions.map((transaction) => (
@@ -295,14 +295,14 @@ export default function SafeDetailClient({
                   key={transaction.id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="border rounded-lg p-4 hover:bg-gray-50"
+                  className="border border-slate-700 rounded-lg p-4 bg-slate-800/50 hover:border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] transition-all duration-300"
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <div className="font-semibold text-gray-800">
+                      <div className="font-semibold text-white">
                         {transaction.type} - {transaction.mode}
                       </div>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-slate-400">
                         Par {transaction.user.name} le{' '}
                         {format(
                           new Date(transaction.createdAt),
@@ -311,23 +311,23 @@ export default function SafeDetailClient({
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xl font-bold text-indigo-600">
+                      <div className="text-xl font-bold text-gold">
                         {transaction.amount.toFixed(2)}€
                       </div>
                       <button
                         onClick={() => handleExportPDF(transaction)}
-                        className="text-xs text-indigo-600 hover:text-indigo-700 mt-1"
+                        className="text-xs text-blue-400 hover:text-blue-300 mt-1 transition-all duration-300 hover:shadow-[0_0_5px_rgba(59,130,246,0.5)]"
                       >
                         Exporter PDF
                       </button>
                     </div>
                   </div>
                   {transaction.notes && (
-                    <div className="text-sm text-gray-600 mt-2">
+                    <div className="text-sm text-slate-300 mt-2">
                       {transaction.notes}
                     </div>
                   )}
-                  <div className="mt-2 text-xs text-gray-500">
+                  <div className="mt-2 text-xs text-slate-500">
                     {Object.entries(
                       typeof transaction.billDetails === 'string'
                         ? (JSON.parse(transaction.billDetails) as BillDetails)

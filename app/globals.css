@@ -3,26 +3,30 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-rajdhani: 'Rajdhani', sans-serif;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-rajdhani), sans-serif;
+  background: #020617; /* slate-950 */
+  color: #f1f5f9; /* slate-100 */
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  .text-gold {
+    @apply bg-gradient-to-r from-yellow-300 to-yellow-600 bg-clip-text text-transparent;
+  }
+  
+  .glow-blue {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5), 0 0 30px rgba(59, 130, 246, 0.3);
+  }
+  
+  .glow-gold {
+    box-shadow: 0 0 15px rgba(234, 179, 8, 0.5), 0 0 30px rgba(234, 179, 8, 0.3);
   }
 }
 
