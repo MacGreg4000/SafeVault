@@ -1,13 +1,13 @@
 # Déploiement Simple sur NAS Synology
 
-## Méthode Ultra-Simple (1 seule commande)
+## Méthode Ultra-Simple (1 seule commande depuis votre machine)
 
 ### Prérequis
+- Machine locale avec Node.js
 - Accès SSH au NAS
 - PM2 installé sur le NAS : `npm install -g pm2`
-- Script de déploiement configuré
 
-### Déploiement en 1 commande
+### Déploiement en 1 commande (depuis votre machine locale)
 
 ```bash
 ./scripts/deploy-nas.sh admin 192.168.1.100 /volume1/docker/safeguard
@@ -19,6 +19,16 @@
 3. ✅ Build l'application
 4. ✅ Copie tout sur le NAS
 5. ✅ Configure et démarre avec PM2
+
+## Si vous êtes déjà sur le NAS
+
+Si vous avez déjà cloné le repo sur le NAS et que le build existe :
+
+```bash
+./scripts/setup-nas.sh
+```
+
+Ce script configure et démarre l'application si le build existe déjà.
 
 ### Configuration
 
