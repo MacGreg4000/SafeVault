@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { createTransaction } from '@/app/actions/safe'
 import { TransactionType, TransactionMode } from '@/lib/constants'
@@ -174,11 +173,7 @@ export default function SafeDetailClient({
 
         {/* Formulaire de transaction */}
         {showTransactionForm && hasWritePermission && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            className="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6 backdrop-blur-sm"
-          >
+          <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-6 mb-6 backdrop-blur-sm transition-all duration-300">
             <h3 className="text-xl font-semibold text-white mb-4 tracking-wide">
               Nouvelle transaction
             </h3>
@@ -278,7 +273,7 @@ export default function SafeDetailClient({
                 {loading ? 'Enregistrement...' : 'Enregistrer la transaction'}
               </button>
             </form>
-          </motion.div>
+          </div>
         )}
 
         {/* Historique des transactions */}
@@ -291,10 +286,8 @@ export default function SafeDetailClient({
           ) : (
             <div className="space-y-4">
               {transactions.map((transaction) => (
-                <motion.div
+                <div
                   key={transaction.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
                   className="border border-slate-700 rounded-lg p-4 bg-slate-800/50 hover:border-blue-500 hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] transition-all duration-300"
                 >
                   <div className="flex justify-between items-start mb-2">
@@ -337,7 +330,7 @@ export default function SafeDetailClient({
                       .map(([value, qty]) => `${qty as number}x ${value}€`)
                       .join(', ')}
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           )}

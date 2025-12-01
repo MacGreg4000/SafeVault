@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { loginAction } from '@/app/actions/auth'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -37,11 +36,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-slate-900/50 border border-slate-800 rounded-lg shadow-xl p-8 w-full max-w-md backdrop-blur-sm"
-      >
+      <div className="bg-slate-900/50 border border-slate-800 rounded-lg shadow-xl p-8 w-full max-w-md backdrop-blur-sm transition-all duration-300">
         <h1 className="text-3xl font-bold text-center mb-2 text-white tracking-wide">
           SafeGuard
         </h1>
@@ -90,7 +85,7 @@ export default function LoginPage() {
             {loading ? 'Connexion...' : 'Se connecter'}
           </button>
         </form>
-      </motion.div>
+      </div>
     </div>
   )
 }
