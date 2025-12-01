@@ -43,6 +43,45 @@ docker-compose up -d --build
 
 L'application sera disponible sur `http://votre-nas-ip:3003`
 
+## Réinitialiser la base de données
+
+Si vous devez réinitialiser la base de données (par exemple pour refaire le setup) :
+
+### Méthode 1 : Script automatique
+
+```bash
+./scripts/reset-db.sh safeguard
+```
+
+### Méthode 2 : Manuellement
+
+```bash
+# Arrêter le conteneur
+docker-compose stop
+
+# Supprimer la base de données
+rm -f prisma/safeguard.db
+
+# Redémarrer
+docker-compose up -d
+```
+
+### Méthode 3 : Depuis le conteneur
+
+```bash
+# Entrer dans le conteneur
+docker exec -it safeguard sh
+
+# Supprimer la base de données
+rm /app/prisma/safeguard.db
+
+# Sortir
+exit
+
+# Redémarrer le conteneur
+docker-compose restart safeguard
+```
+
 ## Commandes utiles
 
 ### Voir les logs
@@ -137,6 +176,19 @@ docker-compose build --no-cache
 docker-compose up -d
 ```
 
+### Réinitialiser complètement
+
+```bash
+# Arrêter et supprimer
+docker-compose down
+
+# Supprimer la base de données
+rm -f prisma/safeguard.db
+
+# Rebuild et redémarrer
+docker-compose up -d --build
+```
+
 ## Interface Docker DSM (Synology)
 
 Vous pouvez aussi utiliser l'interface graphique de Synology :
@@ -149,4 +201,3 @@ Vous pouvez aussi utiliser l'interface graphique de Synology :
 6. Cliquez sur **Create** et **Start**
 
 C'est encore plus simple ! 🚀
-
