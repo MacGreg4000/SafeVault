@@ -32,6 +32,11 @@ COPY . .
 # Variables d'environnement pour le build
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production
+# DATABASE_URL temporaire pour le build (sera remplacé au runtime)
+ENV DATABASE_URL="file:./prisma/safeguard.db"
+
+# Créer une base de données temporaire pour le build si elle n'existe pas
+RUN touch prisma/safeguard.db || true
 
 # Build de l'application
 RUN npm run build
