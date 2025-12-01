@@ -137,8 +137,8 @@ if [ ! -f "package.json" ]; then
     exit 1
 fi
 
-# 2. Générer Prisma
-echo "📦 Génération du client Prisma..."
+# 2. Générer Prisma avec les binaryTargets pour le NAS
+echo "📦 Génération du client Prisma (avec support Linux pour NAS)..."
 npm run prisma:generate
 
 # 3. Créer la base de données si elle n'existe pas
