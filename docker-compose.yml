@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  safeguard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: safeguard
+    restart: unless-stopped
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=production
+      - PORT=3003
+      - DATABASE_URL=file:./prisma/safeguard.db
+      - PDF_SERVICE_URL=http://192.168.1.100:3001
+      - PDF_SERVICE_PROVIDER=browserless
+    volumes:
+      # Persister la base de données
+      - ./prisma:/app/prisma
+      # Persister les logs (optionnel)
+      - ./logs:/app/logs
+    networks:
+      - safeguard-network
+
+networks:
+  safeguard-network:
+    driver: bridge
+
