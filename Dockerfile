@@ -52,11 +52,19 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Créer le dossier public vide (Next.js peut fonctionner sans)
+RUN mkdir -p /app/public
+
 # Copier les fichiers nécessaires depuis le builder
-COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+
+# Copier public seulement s'il existe (optionnel, avec gestion d'erreur)
+RUN --mount=from=builder,source=/app/public,target=/tmp/public \
+    if [ -d "/tmp/public" ] && [ "$(ls -A /tmp/public 2>/dev/null)" ]; then \
+        cp -r /tmp/public/* /app/public/ 2>/dev/null || true; \
+    fi || true
 
 # Créer le dossier pour la base de données
 RUN mkdir -p /app/prisma && chown -R nextjs:nodejs /app/prisma
@@ -70,4 +78,3 @@ ENV HOSTNAME "0.0.0.0"
 
 # Commande de démarrage
 CMD ["node", "server.js"]
-
