@@ -12,7 +12,8 @@ module.exports = {
         PORT: 3003,
         HOSTNAME: '0.0.0.0',
         DATABASE_URL: 'file:./prisma/safeguard.db',
-        PUPPETEER_BROWSER_URL: 'http://localhost:3001',
+        PDF_SERVICE_URL: 'http://192.168.0.250:3001', // Utiliser l'IP du NAS au lieu de localhost
+        PDF_SERVICE_PROVIDER: 'browserless',
       },
       error_file: './logs/err.log',
       out_file: './logs/out.log',

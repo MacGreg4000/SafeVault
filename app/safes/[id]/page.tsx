@@ -17,8 +17,8 @@ export default async function SafeDetailPage({
   const safeResult = await getSafeById(id)
   if (safeResult.error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-red-600">Erreur: {safeResult.error}</div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+        <div className="text-red-400">Erreur: {safeResult.error}</div>
       </div>
     )
   }

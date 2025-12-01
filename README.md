@@ -64,11 +64,24 @@ SafeVault/
 
 ## Configuration
 
-L'application nécessite un service Puppeteer externe tournant sur le port 3001 pour la génération de PDF. Configurez l'URL dans le fichier `.env` :
+L'application nécessite un service Puppeteer externe (Browserless recommandé) tournant sur le port 3001 pour la génération de PDF. Configurez les variables dans le fichier `.env` :
 
 ```
-PUPPETEER_BROWSER_URL="http://localhost:3001"
+PDF_SERVICE_URL="http://192.168.0.250:3001"
+PDF_SERVICE_PROVIDER="browserless"
+# Optionnel : si votre service Browserless nécessite un token
+# PDF_SERVICE_TOKEN="votre_token_ici"
+# Optionnel : désactiver le fallback local Puppeteer (par défaut: true)
+# PDF_USE_LOCAL_FALLBACK="false"
 ```
+
+**Note** : 
+- **Important** : Utilisez l'adresse IP de votre NAS (ex: `192.168.0.250`) au lieu de `localhost` si l'application tourne sur le NAS. Si Browserless tourne dans un conteneur Docker sur le même NAS, utilisez l'IP du NAS.
+- **Système de fallback** : L'application essaie d'abord de se connecter au service Browserless en réseau. Si celui-ci n'est pas disponible, elle utilise automatiquement Puppeteer local (si installé via `npm install puppeteer`). Pour désactiver le fallback local, définissez `PDF_USE_LOCAL_FALLBACK="false"`.
+- L'ancienne variable `PUPPETEER_BROWSER_URL` est toujours supportée pour la rétrocompatibilité.
+- Si votre service Browserless nécessite une authentification, vous pouvez soit :
+  - Ajouter le token dans l'URL : `PDF_SERVICE_URL="http://192.168.0.250:3001?token=VOTRE_TOKEN"`
+  - Ou utiliser la variable `PDF_SERVICE_TOKEN` séparément.
 
 ## Licence
 
