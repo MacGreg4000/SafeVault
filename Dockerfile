@@ -63,12 +63,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
-# Copier public avec gestion d'erreur (le dossier peut ne pas exister)
-# On copie d'abord dans un dossier temporaire puis on déplace si ça existe
-RUN --mount=type=bind,from=builder,source=/app,target=/tmp/builder \
-    if [ -d "/tmp/builder/public" ] && [ "$(ls -A /tmp/builder/public 2>/dev/null)" ]; then \
-        cp -r /tmp/builder/public/* /app/public/; \
-    fi || true
+# Le dossier public est créé vide, pas besoin de le copier
+# Si vous avez des fichiers statiques dans public/, ajoutez cette ligne :
+# COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 # Créer le dossier pour la base de données
 RUN mkdir -p /app/prisma && chown -R nextjs:nodejs /app/prisma
