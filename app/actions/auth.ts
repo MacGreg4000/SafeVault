@@ -95,7 +95,11 @@ export async function setupFirstAdmin(
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7,
+    path: '/',
   })
+
+  revalidatePath('/')
+  revalidatePath('/safes')
 
   return { success: true, admin, safe }
 }
