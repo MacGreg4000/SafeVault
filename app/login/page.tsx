@@ -19,18 +19,29 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const result = await loginAction(formData.email, formData.password)
+      // Utiliser l'API route au lieu de la Server Action pour éviter les problèmes de cache
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      })
+
+      const result = await response.json()
 
       if (result.error) {
         setError(result.error)
+        setLoading(false)
       } else if (result.success) {
         // Forcer un rechargement complet pour que le cookie soit pris en compte
         window.location.href = '/safes'
-        return
       }
     } catch (err: any) {
       setError(err.message || 'Une erreur est survenue')
-    } finally {
       setLoading(false)
     }
   }
