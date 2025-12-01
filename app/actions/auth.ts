@@ -18,7 +18,11 @@ export async function loginAction(email: string, password: string) {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7, // 7 jours
+    path: '/',
   })
+
+  revalidatePath('/')
+  revalidatePath('/safes')
 
   return { success: true, user: { id: user.id, email: user.email, name: user.name, role: user.role } }
 }

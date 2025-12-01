@@ -23,9 +23,10 @@ export default function LoginPage() {
 
       if (result.error) {
         setError(result.error)
-      } else {
-        router.push('/safes')
-        router.refresh()
+      } else if (result.success) {
+        // Forcer un rechargement complet pour que le cookie soit pris en compte
+        window.location.href = '/safes'
+        return
       }
     } catch (err: any) {
       setError(err.message || 'Une erreur est survenue')
