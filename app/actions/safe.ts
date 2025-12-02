@@ -89,7 +89,7 @@ export async function createTransaction(
   if (!safe) return { error: 'Coffre non trouvé' }
 
   const hasPermission = user.role === 'ADMIN' || 
-    safe.permissions.some(p => p.canWrite || p.canManage)
+    safe.permissions.some((p: any) => p.canWrite || p.canManage)
 
   if (!hasPermission) {
     return { error: 'Permission refusée' }

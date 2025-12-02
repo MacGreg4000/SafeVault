@@ -42,7 +42,7 @@ export default async function SafesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {safes.map((safe, index) => (
+            {safes.map((safe: any, index: number) => (
               <Link key={safe.id} href={`/safes/${safe.id}`}>
                 <div
                   className="

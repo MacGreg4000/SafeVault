@@ -29,7 +29,7 @@ export default async function SafeDetailPage({
 
   const hasWritePermission =
     user.role === 'ADMIN' ||
-    safe.permissions.some((p) => p.canWrite || p.canManage)
+    safe.permissions.some((p: any) => p.canWrite || p.canManage)
 
   return (
     <SafeDetailClient

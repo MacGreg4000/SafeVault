@@ -27,7 +27,7 @@ export async function getAccessibleSafes() {
         },
       },
     })
-    safes = permissions.map(p => p.safe)
+    safes = permissions.map((p: any) => p.safe)
   }
 
   return { safes: safes || [] }
@@ -44,7 +44,7 @@ export async function getDashboardData(safeId?: string) {
     const allSafes = await prisma.safe.findMany({
       select: { id: true },
     })
-    accessibleSafeIds = allSafes.map(s => s.id)
+    accessibleSafeIds = allSafes.map((s: { id: string }) => s.id)
   } else {
     const permissions = await prisma.userSafePermission.findMany({
       where: {
@@ -53,7 +53,7 @@ export async function getDashboardData(safeId?: string) {
       },
       select: { safeId: true },
     })
-    accessibleSafeIds = permissions.map(p => p.safeId)
+    accessibleSafeIds = permissions.map((p: { safeId: string }) => p.safeId)
   }
 
   if (accessibleSafeIds.length === 0) {
@@ -90,7 +90,7 @@ export async function getDashboardData(safeId?: string) {
   })
 
   // Calculer l'évolution des montants dans le temps
-  const amountEvolution = transactions.map(t => ({
+  const amountEvolution = transactions.map((t: any) => ({
     date: t.createdAt.toISOString().split('T')[0],
     amount: t.amount,
     type: t.type,
@@ -102,22 +102,22 @@ export async function getDashboardData(safeId?: string) {
   const billEvolution: Record<string, Record<string, number>> = {}
   
   // Initialiser pour chaque valeur de billet
-  BILL_VALUES.forEach(value => {
+  BILL_VALUES.forEach((value: number) => {
     billEvolution[value.toString()] = {}
   })
 
   // Récupérer les IDs uniques des coffres pour traiter séparément
-  const uniqueSafeIds = [...new Set(transactions.map(t => t.safeId))]
+  const uniqueSafeIds = [...new Set(transactions.map((t: any) => t.safeId))] as string[]
   
   // Pour chaque coffre, calculer l'évolution des billets séparément puis agréger
-  uniqueSafeIds.forEach(safeId => {
+  uniqueSafeIds.forEach((safeId: string) => {
     const safeTransactions = transactions
-      .filter(t => t.safeId === safeId)
-      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+      .filter((t: any) => t.safeId === safeId)
+      .sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
     
     let currentBills: Record<string, number> = {}
     
-    safeTransactions.forEach(transaction => {
+    safeTransactions.forEach((transaction: any) => {
       const billDetails = typeof transaction.billDetails === 'string'
         ? JSON.parse(transaction.billDetails)
         : transaction.billDetails
@@ -128,11 +128,11 @@ export async function getDashboardData(safeId?: string) {
       if (transaction.type === 'INVENTORY' || transaction.mode === 'REPLACE') {
         currentBills = { ...billDetails }
       } else if (transaction.mode === 'ADD') {
-        Object.keys(billDetails).forEach(value => {
+        Object.keys(billDetails).forEach((value: string) => {
           currentBills[value] = (currentBills[value] || 0) + billDetails[value]
         })
       } else if (transaction.mode === 'REMOVE') {
-        Object.keys(billDetails).forEach(value => {
+        Object.keys(billDetails).forEach((value: string) => {
           currentBills[value] = (currentBills[value] || 0) - billDetails[value]
           if (currentBills[value] <= 0) {
             delete currentBills[value]
@@ -141,7 +141,7 @@ export async function getDashboardData(safeId?: string) {
       }
 
       // Enregistrer l'état pour chaque valeur de billet (agrégation de tous les coffres)
-      BILL_VALUES.forEach(value => {
+      BILL_VALUES.forEach((value: number) => {
         const valueStr = value.toString()
         if (!billEvolution[valueStr][date]) {
           billEvolution[valueStr][date] = 0
@@ -157,13 +157,13 @@ export async function getDashboardData(safeId?: string) {
   const finalBillsBySafe: Record<string, Record<string, number>> = {}
   
   // Grouper et traiter par coffre (utiliser uniqueSafeIds déjà défini plus haut)
-  uniqueSafeIds.forEach(safeId => {
-    const safeTransactions = transactions.filter(t => t.safeId === safeId).sort((a, b) => 
+  uniqueSafeIds.forEach((safeId: string) => {
+    const safeTransactions = transactions.filter((t: any) => t.safeId === safeId).sort((a: any, b: any) => 
       new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     )
     let finalBills: Record<string, number> = {}
     
-    safeTransactions.forEach(transaction => {
+    safeTransactions.forEach((transaction: any) => {
       const billDetails = typeof transaction.billDetails === 'string'
         ? JSON.parse(transaction.billDetails)
         : transaction.billDetails
@@ -171,11 +171,11 @@ export async function getDashboardData(safeId?: string) {
       if (transaction.type === 'INVENTORY' || transaction.mode === 'REPLACE') {
         finalBills = { ...billDetails }
       } else if (transaction.mode === 'ADD') {
-        Object.keys(billDetails).forEach(value => {
+        Object.keys(billDetails).forEach((value: string) => {
           finalBills[value] = (finalBills[value] || 0) + billDetails[value]
         })
       } else if (transaction.mode === 'REMOVE') {
-        Object.keys(billDetails).forEach(value => {
+        Object.keys(billDetails).forEach((value: string) => {
           finalBills[value] = (finalBills[value] || 0) - billDetails[value]
           if (finalBills[value] <= 0) {
             delete finalBills[value]
@@ -189,8 +189,8 @@ export async function getDashboardData(safeId?: string) {
 
   // Agréger les totaux de tous les coffres
   const aggregatedFinalBills: Record<string, number> = {}
-  Object.values(finalBillsBySafe).forEach(safeBills => {
-    Object.entries(safeBills).forEach(([value, quantity]) => {
+  Object.values(finalBillsBySafe).forEach((safeBills: Record<string, number>) => {
+    Object.entries(safeBills).forEach(([value, quantity]: [string, number]) => {
       aggregatedFinalBills[value] = (aggregatedFinalBills[value] || 0) + quantity
     })
   })
