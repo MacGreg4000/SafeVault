@@ -4,7 +4,36 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from './auth'
 import { BILL_VALUES } from '@/lib/bills'
 
-export async function getDashboardData() {
+export async function getAccessibleSafes() {
+  const user = await getCurrentUser()
+  if (!user) return { error: 'Non authentifié' }
+
+  let safes
+  
+  if (user.role === 'ADMIN') {
+    safes = await prisma.safe.findMany({
+      select: { id: true, name: true, description: true },
+      orderBy: { name: 'asc' },
+    })
+  } else {
+    const permissions = await prisma.userSafePermission.findMany({
+      where: {
+        userId: user.id,
+        canRead: true,
+      },
+      include: {
+        safe: {
+          select: { id: true, name: true, description: true },
+        },
+      },
+    })
+    safes = permissions.map(p => p.safe)
+  }
+
+  return { safes: safes || [] }
+}
+
+export async function getDashboardData(safeId?: string) {
   const user = await getCurrentUser()
   if (!user) return { error: 'Non authentifié' }
 
@@ -36,12 +65,17 @@ export async function getDashboardData() {
     }
   }
 
+  // Si un safeId est spécifié, filtrer uniquement ce coffre
+  const safeIdsToQuery = safeId && accessibleSafeIds.includes(safeId) 
+    ? [safeId] 
+    : accessibleSafeIds
+
   // Récupérer toutes les transactions des coffres accessibles
   // IMPORTANT: On affiche TOUTES les transactions des coffres accessibles, pas seulement celles de l'utilisateur
   // Cela permet de voir l'activité globale de tous les coffres auxquels l'utilisateur a accès
   const transactions = await prisma.transaction.findMany({
     where: {
-      safeId: { in: accessibleSafeIds },
+      safeId: { in: safeIdsToQuery },
       // On ne filtre PAS par userId pour voir toutes les transactions des coffres accessibles
     },
     include: {

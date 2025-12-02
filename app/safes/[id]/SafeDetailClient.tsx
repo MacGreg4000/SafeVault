@@ -6,7 +6,8 @@ import { createTransaction } from '@/app/actions/safe'
 import { TransactionType, TransactionMode } from '@/lib/constants'
 import { BILL_VALUES, calculateTotal, type BillDetails } from '@/lib/bills'
 import { format } from 'date-fns'
-import { ArrowLeft, Vault, FileText, Download, Loader2 } from 'lucide-react'
+import { ArrowLeft, Vault, FileText, Download, Loader2, ArrowUpDown, Plus, Minus, RotateCcw } from 'lucide-react'
+import GlowSelect from '@/components/GlowSelect'
 
 interface SafeDetailClientProps {
   safe: any
@@ -345,43 +346,64 @@ export default function SafeDetailClient({
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
-                    Type
-                  </label>
-                  <select
-                    value={transactionType}
-                    onChange={(e) =>
-                      setTransactionType(e.target.value as TransactionType)
+                <GlowSelect
+                  label="Type"
+                  value={transactionType}
+                  onChange={(value) => {
+                    setTransactionType(value as TransactionType)
+                    // Réinitialiser le mode si on passe à INVENTORY
+                    if (value === TransactionType.INVENTORY) {
+                      setTransactionMode(TransactionMode.REPLACE)
+                    } else if (transactionMode === TransactionMode.REPLACE) {
+                      setTransactionMode(TransactionMode.ADD)
                     }
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                  >
-                    <option value={TransactionType.MOVEMENT}>Mouvement</option>
-                    <option value={TransactionType.INVENTORY}>Inventaire</option>
-                  </select>
-                </div>
+                  }}
+                  options={[
+                    { 
+                      value: TransactionType.MOVEMENT, 
+                      label: 'Mouvement', 
+                      icon: ArrowUpDown,
+                      color: 'text-blue-400'
+                    },
+                    { 
+                      value: TransactionType.INVENTORY, 
+                      label: 'Inventaire', 
+                      icon: FileText,
+                      color: 'text-purple-400'
+                    }
+                  ]}
+                />
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
-                    Mode
-                  </label>
-                  <select
-                    value={transactionMode}
-                    onChange={(e) =>
-                      setTransactionMode(e.target.value as TransactionMode)
-                    }
-                    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                  >
-                    {transactionType === TransactionType.INVENTORY ? (
-                      <option value={TransactionMode.REPLACE}>Remplacement</option>
-                    ) : (
-                      <>
-                        <option value={TransactionMode.ADD}>Ajout (+)</option>
-                        <option value={TransactionMode.REMOVE}>Retrait (-)</option>
-                      </>
-                    )}
-                  </select>
-                </div>
+                <GlowSelect
+                  label="Mode"
+                  value={transactionMode}
+                  onChange={(value) => setTransactionMode(value as TransactionMode)}
+                  options={
+                    transactionType === TransactionType.INVENTORY
+                      ? [
+                          { 
+                            value: TransactionMode.REPLACE, 
+                            label: 'Remplacement', 
+                            icon: RotateCcw,
+                            color: 'text-orange-400'
+                          }
+                        ]
+                      : [
+                          { 
+                            value: TransactionMode.ADD, 
+                            label: 'Ajout (+)', 
+                            icon: Plus,
+                            color: 'text-green-400'
+                          },
+                          { 
+                            value: TransactionMode.REMOVE, 
+                            label: 'Retrait (-)', 
+                            icon: Minus,
+                            color: 'text-red-400'
+                          }
+                        ]
+                  }
+                />
               </div>
 
               <div>

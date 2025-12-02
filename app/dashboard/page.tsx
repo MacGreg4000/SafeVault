@@ -3,8 +3,10 @@
 import { ResponsiveLine } from '@nivo/line'
 import { ResponsivePie } from '@nivo/pie'
 import { ResponsiveBar } from '@nivo/bar'
-import { getDashboardData } from '@/app/actions/dashboard'
+import { getDashboardData, getAccessibleSafes } from '@/app/actions/dashboard'
 import { useEffect, useState } from 'react'
+import GlowSelect from '@/components/GlowSelect'
+import { Vault } from 'lucide-react'
 
 // --- 1. Thème "Premium & Elegant" ---
 const customElegantTheme = {
@@ -130,10 +132,26 @@ const ElegantKpi = ({ title, value, change, positive, delay = 0 }: {
 export default function DashboardPage() {
   const [dashboardData, setDashboardData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [safes, setSafes] = useState<Array<{ id: string; name: string; description: string | null }>>([])
+  const [selectedSafeId, setSelectedSafeId] = useState<string>('all')
+
+  useEffect(() => {
+    async function fetchSafes() {
+      const result = await getAccessibleSafes()
+      if (result.error) {
+        console.error('Erreur lors du chargement des coffres:', result.error)
+      } else {
+        setSafes(result.safes || [])
+      }
+    }
+    fetchSafes()
+  }, [])
 
   useEffect(() => {
     async function fetchData() {
-      const result = await getDashboardData()
+      setLoading(true)
+      const safeId = selectedSafeId === 'all' ? undefined : selectedSafeId
+      const result = await getDashboardData(safeId)
       if (result.error) {
         console.error('Erreur:', result.error)
       } else {
@@ -142,7 +160,7 @@ export default function DashboardPage() {
       setLoading(false)
     }
     fetchData()
-  }, [])
+  }, [selectedSafeId])
 
   if (loading) {
     return (
@@ -172,7 +190,15 @@ export default function DashboardPage() {
     {
       id: "Montant cumulé",
       data: transactions.map((t: any) => {
-        cumulativeAmount += t.amount
+        // Calculer correctement selon le mode
+        if (t.type === 'INVENTORY' || t.mode === 'REPLACE') {
+          // Pour inventaire ou remplacement, on remplace le montant
+          cumulativeAmount = t.amount
+        } else if (t.mode === 'ADD') {
+          cumulativeAmount += t.amount
+        } else if (t.mode === 'REMOVE') {
+          cumulativeAmount -= t.amount
+        }
         return {
           x: t.date,
           y: cumulativeAmount
@@ -224,7 +250,7 @@ export default function DashboardPage() {
     <main className="min-h-screen bg-[#020617] p-6 md:p-12 font-sans text-slate-200">
       {/* Header : Minimaliste */}
       <header 
-        className="mb-12 flex justify-between items-end"
+        className="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-4"
         style={{
           animation: 'fadeInUp 0.6s ease-out both'
         }}
@@ -235,8 +261,32 @@ export default function DashboardPage() {
           </h1>
           <p className="text-slate-500 text-sm mt-2 flex items-center gap-2">
             <span className="inline-block w-1 h-1 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
-            Vue globale de l&apos;infrastructure
+            {selectedSafeId === 'all' 
+              ? 'Vue globale de tous les coffres-forts' 
+              : `Statistiques du coffre-fort sélectionné`
+            }
           </p>
+        </div>
+        <div className="w-full md:w-80">
+          <GlowSelect
+            label="Coffre-fort"
+            value={selectedSafeId}
+            onChange={setSelectedSafeId}
+            options={[
+              { 
+                value: 'all', 
+                label: 'Tous les coffres-forts', 
+                icon: Vault,
+                color: 'text-cyan-400'
+              },
+              ...safes.map(safe => ({
+                value: safe.id,
+                label: safe.name,
+                icon: Vault,
+                color: 'text-blue-400'
+              }))
+            ]}
+          />
         </div>
       </header>
 
