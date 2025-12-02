@@ -10,8 +10,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
-    "prisma:studio": "prisma studio",
-    "postinstall": "prisma generate || true"
+    "prisma:studio": "prisma studio"
   },
   "dependencies": {
     "@nivo/bar": "^0.99.0",
