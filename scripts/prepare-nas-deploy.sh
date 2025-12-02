@@ -96,3 +96,5 @@ echo "   1. Créer le fichier .env sur le NAS"
 echo "   2. Modifier ecosystem.config.js avec le bon chemin"
 echo "   3. Démarrer avec PM2"
 
+
+

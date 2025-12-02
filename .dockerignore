@@ -18,3 +18,5 @@ logs
 deploy-nas
 prisma/*.db-journal
 
+
+

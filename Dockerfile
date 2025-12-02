@@ -61,7 +61,11 @@ RUN mkdir -p /app/public && chown -R nextjs:nodejs /app/public
 # Copier les fichiers nécessaires depuis le builder
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Copier le dossier prisma avec le schéma et les migrations
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+
+# Copier le script de démarrage
+COPY --chown=nextjs:nodejs scripts/start.sh ./start.sh
 
 # Le dossier public est créé vide, pas besoin de le copier
 # Si vous avez des fichiers statiques dans public/, ajoutez cette ligne :
@@ -70,6 +74,16 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 # Créer le dossier pour la base de données
 RUN mkdir -p /app/prisma && chown -R nextjs:nodejs /app/prisma
 
+# Installer Prisma CLI dans le conteneur final (nécessaire pour les migrations)
+# Doit être fait avant de changer d'utilisateur
+RUN npm install -g prisma@^5.22.0
+
+# Créer le dossier node_modules pour le client Prisma si nécessaire
+RUN mkdir -p /app/node_modules && chown -R nextjs:nodejs /app/node_modules
+
+# Rendre le script exécutable (avant de changer d'utilisateur)
+RUN chmod +x /app/start.sh
+
 USER nextjs
 
 EXPOSE 3003
@@ -77,5 +91,5 @@ EXPOSE 3003
 ENV PORT 3003
 ENV HOSTNAME "0.0.0.0"
 
-# Commande de démarrage
-CMD ["node", "server.js"]
+# Utiliser le script de démarrage
+CMD ["/app/start.sh"]

@@ -28,3 +28,5 @@ export function formatBillDetails(billDetails: BillDetails): string {
     .join(', ')
 }
 
+
+

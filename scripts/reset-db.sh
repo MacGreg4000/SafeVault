@@ -42,3 +42,5 @@ echo ""
 echo "✅ Base de données réinitialisée !"
 echo "   Vous pouvez maintenant accéder à /setup pour créer le premier administrateur"
 
+
+

@@ -20,7 +20,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getCurrentUser()
+  let user = null
+  try {
+    user = await getCurrentUser()
+  } catch (error) {
+    // Si la base de données n'est pas initialisée, on continue sans utilisateur
+    // L'application redirigera vers /setup si nécessaire
+    console.error('Erreur lors de la récupération de l\'utilisateur:', error)
+  }
   
   return (
     <html lang="fr" className={rajdhani.variable}>

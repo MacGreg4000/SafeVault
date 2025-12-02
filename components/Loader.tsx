@@ -22,3 +22,5 @@ export default function Loader({ text = 'Chargement', size = 180 }: LoaderProps)
   )
 }
 
+
+
