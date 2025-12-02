@@ -36,8 +36,7 @@ yarn-error.log*
 next-env.d.ts
 
 # prisma
-/prisma/*.db
-/prisma/*.db-journal
+# Les fichiers de base de données MySQL ne sont pas stockés localement
 
 
 

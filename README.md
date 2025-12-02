@@ -12,13 +12,13 @@ Application de gestion de coffres-forts avec comptage de billets en temps réel.
 - ✅ Historique complet des transactions
 - ✅ Export PDF des transactions (via service Puppeteer externe)
 - ✅ Interface moderne avec Tailwind CSS et Framer Motion
-- ✅ Base de données SQLite locale (pas de serveur externe)
+- ✅ Base de données MySQL/MariaDB avec phpMyAdmin
 
 ## Stack Technique
 
 - **Framework** : Next.js 15 (App Router)
 - **Language** : TypeScript
-- **Base de données** : SQLite avec Prisma ORM
+- **Base de données** : MySQL/MariaDB avec Prisma ORM
 - **UI** : Tailwind CSS + Framer Motion
 - **Déploiement** : Node.js avec PM2
 
@@ -32,7 +32,10 @@ Voir le fichier [INSTALLATION.md](./INSTALLATION.md) pour les instructions déta
 # Installer les dépendances
 npm install
 
-# Configurer la base de données
+# Configurer la base de données MySQL
+# 1. Créer la base de données MySQL/MariaDB
+# 2. Configurer DATABASE_URL dans .env (voir .env.example)
+# 3. Générer le client Prisma et appliquer les migrations
 npm run prisma:generate
 npm run prisma:migrate
 
@@ -63,6 +66,23 @@ SafeVault/
 ```
 
 ## Configuration
+
+### Base de données MySQL/MariaDB
+
+Créez un fichier `.env` à la racine du projet avec la configuration suivante :
+
+```
+DATABASE_URL="mysql://user:password@host:port/database"
+```
+
+Exemple :
+```
+DATABASE_URL="mysql://safeguard_user:safeguard_password@localhost:3306/safeguard_db"
+```
+
+**Important** : Assurez-vous que la base de données MySQL/MariaDB est créée avant de lancer les migrations.
+
+### Service PDF
 
 L'application nécessite un service Puppeteer externe (Browserless recommandé) tournant sur le port 3001 pour la génération de PDF. Configurez les variables dans le fichier `.env` :
 

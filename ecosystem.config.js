@@ -11,7 +11,7 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 3003,
         HOSTNAME: '0.0.0.0',
-        DATABASE_URL: 'file:./prisma/safeguard.db',
+        DATABASE_URL: process.env.DATABASE_URL || 'mysql://safeguard_user:safeguard_password@localhost:3306/safeguard_db',
         PDF_SERVICE_URL: 'http://192.168.0.250:3001', // Utiliser l'IP du NAS au lieu de localhost
         PDF_SERVICE_PROVIDER: 'browserless',
       },
