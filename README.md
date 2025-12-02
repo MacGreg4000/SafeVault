@@ -50,22 +50,25 @@ pm2 start ecosystem.config.js
 
 ### Installation sur NAS (Synology)
 
-**Important** : Le client Prisma doit être généré localement avant le déploiement sur le NAS.
+**⚠️ IMPORTANT** : Le build DOIT être fait localement, pas sur le NAS !
 
 ```bash
-# Sur votre machine locale (AVANT de déployer sur le NAS)
+# Sur votre machine locale (OBLIGATOIRE - avant de déployer sur le NAS)
 npm install
 npm run prisma:generate
 npm run build
 
-# Sur le NAS, installer SANS générer Prisma
-SKIP_PRISMA=1 npm install --ignore-scripts
+# Vérifier que le client Prisma est dans le build
+ls -la .next/standalone/node_modules/.prisma/client/
 
-# Ou utiliser le script
-./scripts/skip-prisma-generate.sh
+# Copier le dossier .next/standalone sur le NAS
+# Le client Prisma est déjà inclus, pas besoin de le régénérer
+
+# Sur le NAS, installer UNIQUEMENT les dépendances de production
+npm install --production --ignore-scripts
 ```
 
-Le client Prisma sera inclus dans le build `.next/standalone` et n'a pas besoin d'être régénéré sur le NAS.
+**Ne JAMAIS faire `npm run build` sur le NAS** - cela causera des erreurs de segmentation fault ou "Cannot read properties of undefined".
 
 ## Structure du projet
 

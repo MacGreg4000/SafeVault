@@ -7,6 +7,8 @@ const nextConfig = {
       allowedOrigins: ['localhost:3003', 'localhost:3000'],
     },
   },
+  // S'assurer que Prisma est inclus dans le build standalone
+  serverExternalPackages: [],
 }
 
 module.exports = nextConfig
