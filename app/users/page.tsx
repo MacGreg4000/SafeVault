@@ -4,6 +4,8 @@ import { getUsers } from '@/app/actions/user'
 import { getAllSafes } from '@/app/actions/permission'
 import UsersClient from './UsersClient'
 
+export const dynamic = 'force-dynamic'
+
 export default async function UsersPage() {
   const user = await getCurrentUser()
   if (!user) {

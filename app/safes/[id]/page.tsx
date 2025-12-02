@@ -3,6 +3,8 @@ import { getCurrentUser } from '@/app/actions/auth'
 import { getSafeById, getTransactions } from '@/app/actions/safe'
 import SafeDetailClient from './SafeDetailClient'
 
+export const dynamic = 'force-dynamic'
+
 export default async function SafeDetailPage({
   params,
 }: {

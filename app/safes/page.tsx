@@ -4,6 +4,8 @@ import { getSafes } from '@/app/actions/safe'
 import Link from 'next/link'
 import { Vault, TrendingUp } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function SafesPage() {
   const user = await getCurrentUser()
   if (!user) {
