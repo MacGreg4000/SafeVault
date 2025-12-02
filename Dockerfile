@@ -64,7 +64,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Copier le dossier prisma avec le schéma et les migrations
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
-# Copier le script de démarrage
+# Copier les scripts
+COPY --chown=root:root scripts/init-db.sh ./init-db.sh
+COPY --chown=root:root scripts/docker-entrypoint.sh ./docker-entrypoint.sh
 COPY --chown=nextjs:nodejs scripts/start.sh ./start.sh
 
 # Le dossier public est créé vide, pas besoin de le copier
@@ -81,15 +83,15 @@ RUN npm install -g prisma@^5.22.0
 # Créer le dossier node_modules pour le client Prisma si nécessaire
 RUN mkdir -p /app/node_modules && chown -R nextjs:nodejs /app/node_modules
 
-# Rendre le script exécutable (avant de changer d'utilisateur)
-RUN chmod +x /app/start.sh
+# Rendre les scripts exécutables (avant de changer d'utilisateur)
+RUN chmod +x /app/init-db.sh /app/docker-entrypoint.sh /app/start.sh
 
-USER nextjs
+USER root
 
 EXPOSE 3003
 
 ENV PORT 3003
 ENV HOSTNAME "0.0.0.0"
 
-# Utiliser le script de démarrage
-CMD ["/app/start.sh"]
+# Utiliser le script d'entrée qui initialise la DB en root puis démarre en nextjs
+CMD ["/app/docker-entrypoint.sh"]
